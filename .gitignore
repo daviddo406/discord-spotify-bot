@@ -4,3 +4,4 @@ discord-spotify-bot/obj
 discord-spotify-bot/packages
 discord-spotify-bot/token.txt
 .vs
+.config
