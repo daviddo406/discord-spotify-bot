@@ -50,7 +50,7 @@ namespace Discord_Spotify_Bot
         {
             await _commandHandler.InstallCommandsAsync();
 
-            var token = File.ReadAllText(@".\token.txt");
+            var token = File.ReadAllText(@".\discordToken.txt");
 
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();

@@ -2,6 +2,8 @@
 discord-spotify-bot/bin/Debug
 discord-spotify-bot/obj
 discord-spotify-bot/packages
-discord-spotify-bot/token.txt
+discord-spotify-bot/discordToken.txt
+discord-spotify-bot/clientID.txt
+discord-spotify-bot/clientSecret.txt
 .vs
 .config

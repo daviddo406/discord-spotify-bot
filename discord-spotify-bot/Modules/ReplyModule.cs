@@ -11,10 +11,7 @@ namespace Discord_Spotify_Bot.Modules
     {
         [Command("link")]
         [Summary("Display a link from spotify")]
-        // [command("say")] 
-        // [summary("echos a message")]
-        // public task sayasync([remainder][summary("the text to echo")] string echo) 
-        //    => replyasync(echo);
+
         public Task SayAsync([Remainder][Summary("The link to display")] string link)
             => ReplyAsync("https://open.spotify.com/track/7a86XRg84qjasly9f6bPSD?si=cd0cdb460741405e");
     }
