@@ -13,9 +13,10 @@ using SpotifyAPI.Web;
 
 namespace Discord_Spotify_Bot.Modules
 {
-        public class RefreshSpotifyToken : ModuleBase<SocketCommandContext> {
+    public class RefreshSpotifyToken : ModuleBase<SocketCommandContext> {
 
-        public static async Task GetTokenAsync(){
+        public static async Task GetTokenAsync()
+        {
 
                 var id = File.ReadAllText(@".\clientID.txt");
                 var secret = File.ReadAllText(@".\clientSecret.txt");
@@ -26,5 +27,5 @@ namespace Discord_Spotify_Bot.Modules
                 var spotify = new SpotifyClient(config.WithToken(response.AccessToken));
                 File.WriteAllText("spotifyToken.txt", response.AccessToken);
         }
-}
+    }
 }

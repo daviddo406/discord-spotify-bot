@@ -11,14 +11,16 @@ using System.IO;
 
 namespace Discord_Spotify_Bot.Modules
 {
-        public class APICall : ModuleBase<SocketCommandContext>
-        {
+    public class APICall : ModuleBase<SocketCommandContext>
+    {
         int errorCounter = 0;
 
         [Command("tracks")]
         [Summary("get tracks, this is for api testing")]
-        public async Task GetTracksAsync(){
-            using (var client = new HttpClient()){ // using keyword is used for closing the httpClient connection when no longer in use https://www.automationmission.com/2020/02/15/clean-up-your-net-with-the-dispose-pattern/
+        public async Task GetTracksAsync()
+        {
+            using (var client = new HttpClient())
+            { // using keyword is used for closing the httpClient connection when no longer in use https://www.automationmission.com/2020/02/15/clean-up-your-net-with-the-dispose-pattern/
                 var id = "12uzJ2TWi4IoxssgaNY8MO";
                 string token = "";
                 try
@@ -48,7 +50,7 @@ namespace Discord_Spotify_Bot.Modules
                         await ReplyAsync("We are sorry. Looks like something went wrong with our server, our Devs are on the case!");
                     }
                 }
+            }
         }
-        }
-}
+    }
 }
