@@ -12,6 +12,8 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -133,6 +135,7 @@
     <Compile Include="Models\Track.cs" />
     <Compile Include="Models\TrackDetails.cs" />
     <Compile Include="Models\SpotifySong.cs" />
+    <Compile Include="Modules\AudioModule.cs" />
     <Compile Include="Modules\ReplyModule.cs" />
     <Compile Include="Modules\SearchSong.cs" />
     <Compile Include="Program.cs" />
@@ -155,5 +158,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
