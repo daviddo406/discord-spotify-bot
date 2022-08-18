@@ -129,11 +129,14 @@
     <Compile Include="DetailModels\ExternalUrls.cs" />
     <Compile Include="DetailModels\Image.cs" />
     <Compile Include="DetailModels\ExternalIDs.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\Track.cs" />
+    <Compile Include="Models\TrackDetails.cs" />
     <Compile Include="Models\SpotifySong.cs" />
     <Compile Include="Modules\ReplyModule.cs" />
+    <Compile Include="Modules\SearchSong.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Modules\SongEmbedModule.cs" />
     <Compile Include="Modules\APICall.cs" />
     <Compile Include="Modules\RefreshSpotifyToken.cs" />
   </ItemGroup>

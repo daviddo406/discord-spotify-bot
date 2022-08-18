@@ -10,7 +10,7 @@ using System.Text;
 using System.Collections.Generic;
 using SpotifyAPI.Web;
 
-
+//Token Documentation https://johnnycrazy.github.io/SpotifyAPI-NET/docs/client_credentials
 namespace Discord_Spotify_Bot.Modules
 {
         public class RefreshSpotifyToken : ModuleBase<SocketCommandContext> {
