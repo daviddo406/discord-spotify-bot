@@ -21,5 +21,7 @@ namespace Discord_Spotify_Bot.Models
         [JsonProperty("external_urls")]
         public ExternalUrls ExternalUrls { get; set; }
 
+        [JsonProperty("duration_ms")]
+        public int Duration { get; set; }
     }
 }

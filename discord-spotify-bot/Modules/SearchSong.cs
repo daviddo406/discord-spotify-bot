@@ -40,13 +40,27 @@ namespace Discord_Spotify_Bot.Modules
                 if (result.IsSuccessStatusCode) {
                     // var json = result.Content.ReadAsStringAsync().Result;
                     Track json = result.Content.ReadAsAsync<Track>().Result;
-                    // await ReplyAsync(json.Albums.SpotifyLink);
+                    var displayedSeconds = "";
+                    var duration = json.Tracks.Items[0].Duration;
+                    var overallSeconds = duration / 1000;
+                    var minutes = overallSeconds / 60;
+                    int seconds = overallSeconds - (minutes * 60);
+                    if (seconds < 10)
+                    {
+                        displayedSeconds = seconds.ToString().PadLeft(2, '0');
+                    }
+                    else
+                    {
+                        displayedSeconds = seconds.ToString();
+                    }
+
+
                     var embed = new EmbedBuilder
                     {
                         Title = json.Tracks.Items[0].Name,
                         Url = json.Tracks.Items[0].ExternalUrls.Spotify,
                         ThumbnailUrl = json.Tracks.Items[0].Album.Images[0].Url,
-                        Description = $"Album: {json.Tracks.Items[0].Album.Name}"
+                        Description = $"Album: {json.Tracks.Items[0].Album.Name}\nArtist: {json.Tracks.Items[0].Artists[0].Name}\nDuration: {minutes}:{displayedSeconds}"
                     };
                     embed.WithCurrentTimestamp().WithColor(Color.Green);
                     await ReplyAsync(embed: embed.Build());
