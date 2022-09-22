@@ -1,12 +1,8 @@
 ﻿using Discord;
 using Discord.Audio;
 using Discord.Commands;
-using Discord_Spotify_Bot.Models;
 using Discord_Spotify_Bot.Services;
 using System;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Discord_Spotify_Bot.Modules
@@ -14,6 +10,26 @@ namespace Discord_Spotify_Bot.Modules
     public class PlayerModule : ModuleBase<SocketCommandContext>
     {
         public static IAudioClient AudioClient { get; private set; }
+
+        private static AudioStreamService AudioStreamService
+        {
+            get 
+            {
+                return AudioStreamService; 
+            } 
+            set
+            {
+                if (AudioStreamService == null)
+                {
+                    AudioStreamService = new AudioStreamService();
+                }
+            }
+        }
+
+        public PlayerModule (AudioStreamService audioStreamService = null)
+        {
+            AudioStreamService = audioStreamService;
+        }
 
         [Command("join", RunMode = RunMode.Async)]
         public async Task JoinChannel(IVoiceChannel channel = null)
@@ -32,21 +48,36 @@ namespace Discord_Spotify_Bot.Modules
         public async Task PlaySong([Remainder] string path)
         {
             Console.WriteLine("Play Received!");
-            string file = @"D:\General\work\audio.mp3";
 
             YoutubeExplodeService youtubeExplodeService = new YoutubeExplodeService();
-            await youtubeExplodeService.Download(path);
-            await Play(file);
+
+            AudioStreamService.Push(await youtubeExplodeService.Download(path));
+            if (AudioStreamService.IsPlaying == false)
+            {
+                do
+                {
+                    await Play();
+                }
+                while (AudioStreamService.IsEmpty() == false);
+            }
+            else
+            {
+                Console.WriteLine("Song has been added to queue");
+                await ReplyAsync("Song has been added to queue!");
+            }
         }
 
-        private async Task Play(string file)
+        [Command("skip", RunMode = RunMode.Async)]
+        public async Task SkipSong()
         {
-            // For the next step with transmitting audio, you would want to pass this Audio Client in to a service.
-
-            AudioStreamService audioStreamService = new AudioStreamService();
-            await audioStreamService.SendStream(AudioClient, file);
+            await AudioStreamService.ClearStream(AudioClient);
+            await Play();
         }
 
+        private async Task Play()
+        {
+            await AudioStreamService.SendStream(AudioClient);
+        }
 
     }
 }

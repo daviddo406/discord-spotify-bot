@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,17 +11,47 @@ namespace Discord_Spotify_Bot.Services
 {
     public class AudioStreamService
     {
-        public async Task SendStream(IAudioClient client, string path)
+        public static bool IsPlaying { get; set; }
+
+        private static Queue<string> SongQueue = new Queue<string>();
+        private static AudioOutStream AudioOutStream { get; set; }
+        public static async Task SendStream(IAudioClient client)
         {
-            using (var ffmpeg = CreateStream(path))
+            string hash = SongQueue.Dequeue();
+            using (var ffmpeg = CreateStream(hash))
             using (var output = ffmpeg.StandardOutput.BaseStream)
-            using (var discord = client.CreatePCMStream(AudioApplication.Mixed))
+            using (AudioOutStream = client.CreatePCMStream(AudioApplication.Mixed))
             {
-                try { await output.CopyToAsync(discord); }
-                finally { await discord.FlushAsync(); }
+                try
+                {
+                    IsPlaying = true;
+                    await output.CopyToAsync(AudioOutStream);
+                }
+                finally
+                {
+                    await AudioOutStream.FlushAsync();
+                    IsPlaying = false;
+                    File.Delete(hash);
+                }
             }
         }
-        private Process CreateStream(string path)
+
+        public static Task ClearStream(IAudioClient client)
+        {
+            AudioOutStream.Dispose();
+            return Task.CompletedTask;
+        }
+
+        public static void Push(string song)
+        {
+            SongQueue.Enqueue(song);
+        }
+
+        public bool IsEmpty()
+        {
+            return SongQueue.Count == 0;
+        }
+        private static Process CreateStream(string path)
         {
             return Process.Start(new ProcessStartInfo
             {

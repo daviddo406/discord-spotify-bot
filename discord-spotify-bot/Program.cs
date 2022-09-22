@@ -69,6 +69,11 @@ namespace Discord_Spotify_Bot
 
             Console.WriteLine("Ending Main...");
             _client.StopAsync();
+            _client.Dispose();
+            if (Directory.Exists(@".\songs"))
+            {
+                Directory.Delete(@".\songs", true);
+            }
             return Task.CompletedTask;
         }
     }
