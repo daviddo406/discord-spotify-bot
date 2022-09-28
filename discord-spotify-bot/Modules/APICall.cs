@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Discord_Spotify_Bot.Models;
 using System.IO;
+using Serilog;
 
 
 namespace Discord_Spotify_Bot.Modules
@@ -47,7 +48,22 @@ namespace Discord_Spotify_Bot.Modules
                     }
                     else
                     {
-                        await ReplyAsync("We are sorry. Looks like something went wrong with our server, our Devs are on the case!");
+                        if (errorCounter == 0)
+                        {
+                            errorCounter++;
+                            await RefreshSpotifyToken.GetTokenAsync();
+                            await GetTracksAsync();
+                        }
+                        else
+                        {
+                            var today = DateTime.Now.ToString("M-d-yyyy");
+                            Log.Logger = new LoggerConfiguration()
+                                .WriteTo.Console()
+                                .WriteTo.File(@"C:\Users\xseam\Desktop\" + today + ".txt", rollingInterval: RollingInterval.Day)
+                                .CreateLogger();
+                            Log.Error(result.Content.ReadAsStringAsync().Result);
+                            await ReplyAsync("We are sorry. Looks like something went wrong with our server, our Devs are on the case!");
+                        }
                     }
                 }
             }

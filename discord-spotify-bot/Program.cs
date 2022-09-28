@@ -1,8 +1,13 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Discord_Spotify_Bot.Modules;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -30,27 +35,29 @@ namespace Discord_Spotify_Bot
         private Program()
         {
             _client = new DiscordSocketClient(new DiscordSocketConfig
-            {
-                LogLevel = LogSeverity.Info
-            });
+                {
+                    LogLevel = LogSeverity.Info
+                });
 
-            _commands = new CommandService(new CommandServiceConfig
-            {
-                CaseSensitiveCommands = false
-            });
+                _commands = new CommandService(new CommandServiceConfig
+                {
+                    CaseSensitiveCommands = false
+                });
 
-            _loggingService = new LoggingService(_client, _commands);
+                _loggingService = new LoggingService(_client, _commands);
 
-            _commandHandler = new CommandHandler(_client, _commands);
-            // Setup your DI container.
-            //_services = ConfigureServices();
-        }
+                _commandHandler = new CommandHandler(_client, _commands);
+                // Setup your DI container.
+                //_services = ConfigureServices();
+            }
 
         private async Task MainAsync()
         {
+            LoadSecrets.LoadJson();
             await _commandHandler.InstallCommandsAsync();
 
-            var token = File.ReadAllText(@".\discordToken.txt");
+            var token = LoadSecrets.discordToken;
+
 
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();

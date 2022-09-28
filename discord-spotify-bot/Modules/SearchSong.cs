@@ -7,6 +7,7 @@ using Discord_Spotify_Bot.Models;
 using System.IO;
 using Newtonsoft.Json;
 using Discord;
+using Serilog;
 
 namespace Discord_Spotify_Bot.Modules
 {
@@ -18,16 +19,18 @@ namespace Discord_Spotify_Bot.Modules
         [Summary("Search for a song from Spotify")]
         public async Task SearchSongAsync([Remainder] string command)
         {
-
+            LoadSecrets.LoadJson();
             using (var client = new HttpClient()){
-                string token = "";
+                string token;
                 try
                 {
-                    token = File.ReadAllText(@".\spotifyToken.txt");
+                    token = LoadSecrets.spotifyToken;
+
                 }
                 catch (FileNotFoundException)
                 {
                     await RefreshSpotifyToken.GetTokenAsync();
+                    token = LoadSecrets.spotifyToken;
                 }
                 var q = command.Replace(" ", "%20");
                 var type = "track";
@@ -38,7 +41,6 @@ namespace Discord_Spotify_Bot.Modules
                 var result = client.GetAsync(endpoint).Result;
                 
                 if (result.IsSuccessStatusCode) {
-                    // var json = result.Content.ReadAsStringAsync().Result;
                     Track json = result.Content.ReadAsAsync<Track>().Result;
                     var displayedSeconds = "";
                     var duration = json.Tracks.Items[0].Duration;
@@ -74,6 +76,12 @@ namespace Discord_Spotify_Bot.Modules
                     }
                     else
                     {
+                        var today = DateTime.Now.ToString("M-d-yyyy");
+                        Log.Logger = new LoggerConfiguration()
+                            .WriteTo.Console()
+                            .WriteTo.File(@"C:\Users\xseam\Desktop\" + today + ".txt", rollingInterval: RollingInterval.Day)
+                            .CreateLogger();
+                        Log.Error(result.Content.ReadAsStringAsync().Result);
                         await ReplyAsync("We are sorry. Looks like something went wrong with our server, our Devs are on the case!");
                     }
                 }

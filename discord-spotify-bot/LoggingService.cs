@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,14 @@ namespace Discord_Spotify_Bot
 		{
 			if (message.Exception is CommandException cmdException)
 			{
+				var today = DateTime.Now.ToString("M-d-yyyy");
+				Log.Logger = new LoggerConfiguration()
+							.WriteTo.Console()
+							.WriteTo.File(@"C:\Users\xseam\Desktop\" + today + ".txt", rollingInterval: RollingInterval.Day)
+							.CreateLogger();
+				Log.Error($"[Command/{message.Severity}] {cmdException.Command.Aliases.First()}"
+					+ $" failed to execute in {cmdException.Context.Channel}.");
+				Log.Error(cmdException.ToString());
 				Console.WriteLine($"[Command/{message.Severity}] {cmdException.Command.Aliases.First()}"
 					+ $" failed to execute in {cmdException.Context.Channel}.");
 				Console.WriteLine(cmdException);
